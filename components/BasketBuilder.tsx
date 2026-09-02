@@ -19,7 +19,7 @@ export function BasketBuilder({
   const { isConnected } = useAccount();
   const { create, status, error, txHash } = useCreateBasket();
   const [name, setName] = useState("My Basket");
-  const [linkOgb, setLinkOgb] = useState(false);
+  // OGB (the STAX community token) is auto-included in every basket.
   const chosen = points.filter((p) => selected.includes(p.token.symbol));
 
   // Equal weights by default, rounded so they sum to 10000.
@@ -49,7 +49,7 @@ export function BasketBuilder({
       name,
       tokens: chosen.map((c) => c.token.address as Address),
       weightsBps: weights,
-      communityToken: linkOgb ? (OGB_TOKEN as Address) : undefined,
+      communityToken: OGB_TOKEN as Address, // OGB auto-included on every basket
     });
   }
 
@@ -105,25 +105,30 @@ export function BasketBuilder({
         </span>
       </div>
 
-      <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "var(--muted)" }}>
-        <input type="checkbox" checked={linkOgb} onChange={(e) => setLinkOgb(e.target.checked)} />
-        Link OGB as community token (memestock)
-      </label>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          fontSize: 11,
+          color: "var(--muted)",
+          padding: "8px 10px",
+          borderRadius: 10,
+          background: "var(--accent-soft)",
+          border: "1px solid rgba(34,197,94,0.25)",
+        }}
+      >
+        <span style={{ color: "var(--accent)", fontWeight: 700 }}>+ OGB</span>
+        community token auto-included in every basket
+      </div>
 
       <button
         onClick={onSave}
         disabled={!isConnected || chosen.length === 0 || status === "pending"}
-        className={chosen.length > 0 && isConnected ? "accent-glow" : ""}
+        className="btn-glass-accent"
         style={{
-          background: "var(--accent)",
-          color: "#fff",
-          border: "none",
-          borderRadius: 12,
-          padding: "12px 16px",
+          padding: "13px 16px",
           fontSize: 14,
-          fontWeight: 600,
-          cursor: chosen.length > 0 && isConnected ? "pointer" : "not-allowed",
-          opacity: !isConnected || chosen.length === 0 ? 0.5 : 1,
         }}
       >
         {status === "pending" ? "Saving onchain…" : "Save basket onchain"}

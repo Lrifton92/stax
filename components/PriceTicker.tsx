@@ -29,14 +29,14 @@ export function PriceTicker({
   }, [price]);
 
   if (price === null) {
-    return <span className="mono" style={{ color: "var(--muted)" }}>—</span>;
+    return <span className="kore-money" style={{ color: "var(--muted)" }}>—</span>;
   }
 
   const color =
     dir === "up" ? "var(--up)" : dir === "down" ? "var(--down)" : "var(--text)";
 
   return (
-    <span className="mono" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+    <span className="kore-money" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 15 }}>
       <motion.span
         key={price.toString()}
         initial={reduce ? false : { opacity: 0.4, y: dir === "up" ? 6 : dir === "down" ? -6 : 0 }}

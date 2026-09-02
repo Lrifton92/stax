@@ -136,18 +136,8 @@ export function AlertForm({ basket }: { basket?: Basket | null }) {
       <button
         onClick={onSubmit}
         disabled={!valid}
-        className={valid ? "accent-glow" : ""}
-        style={{
-          background: "var(--accent)",
-          color: "#fff",
-          border: "none",
-          borderRadius: 12,
-          padding: "12px 16px",
-          fontSize: 14,
-          fontWeight: 600,
-          cursor: valid ? "pointer" : "not-allowed",
-          opacity: valid ? 1 : 0.5,
-        }}
+        className="btn-glass-accent"
+        style={{ padding: "13px 16px", fontSize: 14 }}
       >
         {status === "pending" ? "Setting alert…" : "Set alert"}
       </button>

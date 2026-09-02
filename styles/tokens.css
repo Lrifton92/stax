@@ -1,76 +1,216 @@
+/* STAX — calqué sur le Kore terminal shippé (terminal-mode.css) :
+   noir pur + cards glass transparentes (blur 14px) + JetBrains Mono +
+   zéro coin blanc + status-line LIVE + data en vert/rouge, UI monochrome.
+   Boutons = Apple glass frosté. */
 :root {
-  --bg: #0a0b0d;
-  --bg-2: #0e1014;
+  --bg: #000000;
+  --bg-2: #050505;
   --panel: rgba(255, 255, 255, 0.045);
-  --panel-strong: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.09);
-  --text: #e8eaed;
-  --muted: #8b909a;
-  --accent: #0052ff;
-  --accent-soft: rgba(0, 82, 255, 0.14);
-  --up: #3fb68b;
-  --down: #d9584b;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --panel-hover: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --fg-0: #ffffff;
+  --fg-2: rgba(255, 255, 255, 0.72);
+  --fg-3: rgba(255, 255, 255, 0.42);
+  --muted: rgba(255, 255, 255, 0.42);
+  --up: #22c55e;
+  --down: #ef4444;
+  --warn: #f59e0b;
+  --accent: #22c55e;
+  --accent-soft: rgba(34, 197, 94, 0.14);
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r-4: 16px;
+
+  /* Kore terminal card shadow recipe */
+  --kore-card-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 0 0 0.5px rgba(0, 0, 0, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.45);
+
+  /* OnchainKit -> monochrome glass */
+  --ock-font-family: "JetBrains Mono", ui-monospace, monospace;
+  --ock-border-radius: 12px;
+  --ock-text-primary: #ffffff;
+  --ock-text-foreground: #ffffff;
+  --ock-bg-default: rgba(0, 0, 0, 0.55);
+  --ock-bg-alternate: rgba(255, 255, 255, 0.05);
+  --ock-border-line-default: rgba(255, 255, 255, 0.14);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
+  background: #000000;
+  color: var(--fg-0);
+  font-family: var(--mono);
+  letter-spacing: 0.1px;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
-/* mission-control grid backdrop */
+/* faint terminal grid, fades from top */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(ellipse at 50% 0%, #000 40%, transparent 85%);
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% -10%, #000 45%, transparent 85%);
   pointer-events: none;
 }
 
+/* Kore card: transparent glass, blur 14px saturate 130%, layered shadow */
 .glass {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  backdrop-filter: blur(14px);
+  border-radius: var(--r-4);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: var(--kore-card-shadow);
 }
+.glass:hover { border-color: var(--panel-hover); }
 
-.mono {
+/* big values — Kore .kore-money: clean white, tabular, tight */
+.mono,
+.kore-money {
   font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+.kore-money {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--fg-0);
 }
 
-.up {
-  color: var(--up);
-}
-.down {
-  color: var(--down);
-}
+.up { color: var(--up); }
+.down { color: var(--down); }
 
+/* selected state = thin green ring, terminal-style */
 .accent-glow {
   box-shadow:
-    0 0 0 1px rgba(0, 82, 255, 0.35),
-    0 0 40px -10px rgba(0, 82, 255, 0.5);
+    0 0 0 1px rgba(34, 197, 94, 0.5),
+    0 0 34px -14px rgba(34, 197, 94, 0.55),
+    var(--kore-card-shadow);
+}
+
+/* ── Kore status-line (LIVE · LAST · SRC · LAT) ─────────────────────── */
+.kore-statusline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+}
+.kore-statusline .sep { color: rgba(255, 255, 255, 0.1); }
+.kore-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--up);
+}
+.kore-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--up);
+  box-shadow: 0 0 8px var(--up);
+  animation: kore-blink 1.6s ease-in-out infinite;
+}
+@keyframes kore-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ── Apple-glass controls ───────────────────────────────────────────── */
+.btn-glass,
+.btn-glass-accent {
+  position: relative;
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: #ffffff;
+  border-radius: 13px;
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+.btn-glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.07));
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 8px 26px -10px rgba(0, 0, 0, 0.7);
+}
+.btn-glass:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.27), rgba(255, 255, 255, 0.1));
+  transform: translateY(-1px);
+}
+.btn-glass-accent {
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.12));
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #eafff2;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 30px -10px rgba(34, 197, 94, 0.55);
+}
+.btn-glass-accent:hover {
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.4), rgba(34, 197, 94, 0.18));
+  transform: translateY(-1px);
+}
+.btn-glass:active,
+.btn-glass-accent:active { transform: translateY(0); }
+.btn-glass:disabled,
+.btn-glass-accent:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── OnchainKit ConnectWallet -> Apple glass ────────────────────────── */
+[data-testid="ockConnectWallet_Container"] > button,
+[data-testid="ockConnectWallet_Container"] button {
+  font-family: var(--mono) !important;
+  font-weight: 600 !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.09)) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 13px !important;
+  backdrop-filter: blur(22px) saturate(1.6) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1.6) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 8px 26px -10px rgba(0, 0, 0, 0.7) !important;
+  transition: transform 0.16s ease, background-image 0.16s ease !important;
+}
+[data-testid="ockConnectWallet_Container"] button:hover {
+  transform: translateY(-1px);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.13)) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    transition: none !important;
-  }
+  * { animation: none !important; transition: none !important; }
 }
+
+/* ── Scrollbar masquée, scroll molette/pavé conservé (recette Kore terminal) ── */
+*::-webkit-scrollbar { width: 0 !important; height: 0 !important; background: transparent !important; }
+*::-webkit-scrollbar-thumb { background: transparent !important; }
+html, body, * { scrollbar-width: none !important; -ms-overflow-style: none !important; }

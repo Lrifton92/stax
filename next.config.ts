@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     config.plugins = config.plugins || [];
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(
-        /^@x402\//,
+        /^(@x402\/|pino-pretty$)/,
         path.resolve(__dirname, "lib/empty-x402.js"),
       ),
     );

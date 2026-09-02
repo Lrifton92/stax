@@ -15,6 +15,9 @@ export function Providers({ children }: { children: ReactNode }) {
       config={{
         appearance: { mode: "dark", name: "STAX" },
         paymaster: process.env.NEXT_PUBLIC_CDP_PAYMASTER || undefined,
+        // 'all' = let the user pick an injected EOA (MetaMask/Rabby) instead of
+        // being forced into the Coinbase Smart Wallet passkey popup.
+        wallet: { preference: "all" },
       }}
       miniKit={{ enabled: true }}
     >

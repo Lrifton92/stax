@@ -1,66 +1,79 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  ConnectWallet,
-  Wallet,
-  WalletDropdown,
-  WalletDropdownDisconnect,
-} from "@coinbase/onchainkit/wallet";
-import { Avatar, Name, Identity, Address } from "@coinbase/onchainkit/identity";
+import { WalletButton } from "./WalletButton";
 
+// STAX shell — Kore terminal chrome: pure-black window, thin 1px ring,
+// blurred titlebar, live status-line footer, JetBrains Mono throughout.
 export function Shell({ children }: { children: ReactNode }) {
   return (
-    <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
-      <header
+    <div style={{ position: "relative", zIndex: 1, minHeight: "100vh", padding: 10 }}>
+      <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "16px 20px",
-          borderBottom: "1px solid var(--border)",
-          position: "sticky",
-          top: 0,
-          backdropFilter: "blur(10px)",
-          background: "rgba(10,11,13,0.6)",
-          zIndex: 5,
+          width: "100%",
+          margin: 0,
+          borderRadius: 16,
+          overflow: "hidden",
+          background: "rgba(0,0,0,0.4)",
+          boxShadow:
+            "0 0 0 1px rgba(255,255,255,0.06), 0 30px 80px -40px rgba(0,0,0,0.9)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span
-            className="mono"
-            style={{ fontSize: 20, fontWeight: 600, letterSpacing: 1 }}
-          >
-            STAX
-          </span>
-          <span style={{ fontSize: 12, color: "var(--muted)" }}>
-            tokenized stock baskets · Base
+        {/* titlebar */}
+        <header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "13px 18px",
+            background: "rgba(0,0,0,0.55)",
+            backdropFilter: "blur(20px) saturate(140%)",
+            WebkitBackdropFilter: "blur(20px) saturate(140%)",
+            borderBottom: "1px solid rgba(255,255,255,0.05)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span
+              style={{
+                fontSize: 17,
+                fontWeight: 700,
+                letterSpacing: "0.28em",
+                paddingLeft: 2,
+              }}
+            >
+              STAX
+            </span>
+            <span
+              style={{
+                fontSize: 9.5,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--fg-3)",
+              }}
+            >
+              Tokenized Stock Baskets · Base
+            </span>
+          </div>
+          <WalletButton />
+        </header>
+
+        {/* body */}
+        <main style={{ padding: "26px 22px 24px" }}>{children}</main>
+
+        {/* status-line */}
+        <div className="kore-statusline">
+          <span className="kore-live">LIVE</span>
+          <span className="sep">·</span>
+          <span>BASE MAINNET</span>
+          <span className="sep">·</span>
+          <span>CHAINLINK · 8DP</span>
+          <span className="sep">·</span>
+          <span>13 FEEDS</span>
+          <span style={{ marginLeft: "auto", color: "var(--fg-3)" }}>
+            B20 · STAX
           </span>
         </div>
-        <Wallet>
-          <ConnectWallet>
-            <Avatar className="h-6 w-6" />
-            <Name />
-          </ConnectWallet>
-          <WalletDropdown>
-            <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-              <Avatar />
-              <Name />
-              <Address />
-            </Identity>
-            <WalletDropdownDisconnect />
-          </WalletDropdown>
-        </Wallet>
-      </header>
-      <main
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          padding: "24px 20px 80px",
-        }}
-      >
-        {children}
-      </main>
+      </div>
     </div>
   );
 }
