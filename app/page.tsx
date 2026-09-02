@@ -52,7 +52,16 @@ export default function Page() {
           </h1>
           <EligibilityBadge />
         </div>
-        <p style={{ color: "var(--muted)", margin: 0, maxWidth: 620, fontSize: 14 }}>
+        <p
+          style={{
+            color: "var(--fg-3)",
+            margin: "8px 0 0",
+            maxWidth: 560,
+            fontSize: 11.5,
+            lineHeight: 1.55,
+            letterSpacing: "0.01em",
+          }}
+        >
           Pick Coinbase tokenized stocks, weight them, and save your basket
           onchain on Base. Live prices are Chainlink feeds, multiplier- and
           staleness-aware. Saving and alerts work for any wallet; trading is
