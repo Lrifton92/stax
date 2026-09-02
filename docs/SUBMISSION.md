@@ -8,8 +8,8 @@ demo posted on X tagging **@buildonbase**, and (2) the Google Form.
 - **What does it solve (1-2 lines):**
   `STAX is a wallet-native way to build, value, save onchain, and set price alerts on baskets of Coinbase tokenized stocks on Base. It turns single tokenized stocks into a personal, composable index with live multiplier- and staleness-aware Chainlink pricing.`
 - **Demo Video Link:** `<Loom URL>`  (record per script below)
-- **Live Project Link:** `<Vercel URL>`  (after `vercel deploy --prod`)
-- **Builder Code:** `<from base.dev>`  (also put in .env NEXT_PUBLIC_BUILDER_CODE)
+- **Live Project Link:** `https://stax-mocha.vercel.app`
+- **Builder Code:** `bc_7bkuc3p1`  (encoded hex suffix already in .env / Vercel as NEXT_PUBLIC_BUILDER_CODE)
 
 ## Loom demo script (~90s, tag @buildonbase in the X post)
 1. **Hook (10s):** "Coinbase tokenized stocks are live on Base, but there's no
@@ -28,12 +28,12 @@ demo posted on X tagging **@buildonbase**, and (2) the Google Form.
    inside the Base app. @buildonbase"
 
 ## Pre-submission checklist (Soufian)
-- [ ] Get **Builder Code** at base.dev → `.env` `NEXT_PUBLIC_BUILDER_CODE`.
+- [x] Builder Code `bc_7bkuc3p1` generated (base.dev), encoded suffix in .env + Vercel.
 - [ ] Add OnchainKit paymaster endpoint → `.env` `NEXT_PUBLIC_CDP_PAYMASTER` (CDP).
 - [ ] Deploy `BasketRegistry` to Base mainnet (you sign):
       `cd contracts && base-forge script script/DeployBasketRegistry.s.sol --rpc-url https://mainnet.base.org --account lrifton-0x1dee --sender 0x1deeaEc4250e66702E22777Ec1E3A70B19745A72 --broadcast`
       → put address in `.env` `NEXT_PUBLIC_REGISTRY_ADDRESS`.
-- [ ] `vercel deploy --prod` (set all NEXT_PUBLIC_* + NEXT_PUBLIC_URL in Vercel).
+- [x] Deployed to Vercel: https://stax-mocha.vercel.app (NEXT_PUBLIC_* set).
 - [ ] Restrict the OnchainKit client key to the Vercel domain (CDP portal).
 - [ ] Sign the Mini App manifest: `npx create-onchain --manifest` → FARCASTER_* env.
 - [ ] Do a real save from 0x1dee on the live site → confirms a real interaction.
