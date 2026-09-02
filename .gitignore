@@ -9,3 +9,5 @@ contracts/cache
 contracts/broadcast
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
