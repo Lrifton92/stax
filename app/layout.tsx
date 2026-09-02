@@ -2,14 +2,31 @@ import type { Metadata } from "next";
 import "../styles/tokens.css";
 import { Providers } from "./providers";
 
+const SITE = process.env.NEXT_PUBLIC_URL ?? "https://stax-mocha.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
   title: "STAX — Tokenized Stock Baskets on Base",
   description:
     "Build, value and track a personal basket of Coinbase tokenized stocks on Base. Save it onchain, set price alerts. A wallet-native portfolio layer for the B20 ecosystem.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "STAX — Tokenized Stock Baskets on Base",
     description:
       "Build, value and track baskets of Coinbase tokenized stocks on Base.",
+    images: ["/og.png"],
+    url: SITE,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "STAX — Tokenized Stock Baskets on Base",
+    description:
+      "Build, value and track baskets of Coinbase tokenized stocks on Base.",
+    images: ["/og.png"],
   },
 };
 
