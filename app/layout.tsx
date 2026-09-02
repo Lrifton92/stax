@@ -21,6 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Base Dashboard domain verification (app registered as STAX) */}
+        <meta name="base:app_id" content="6a982505cfa2c998e36b5afa" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
