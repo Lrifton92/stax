@@ -38,7 +38,9 @@ export function useBaskets(address?: Address) {
     abi: REGISTRY_ABI,
     functionName: "basketsOf",
     args: address ? [address] : undefined,
-    query: { enabled },
+    // Poll so a freshly-saved basket appears within a few seconds without a
+    // manual page refresh (the save tx mines in ~2s on Base).
+    query: { enabled, refetchInterval: 5000, refetchOnMount: "always" },
   });
 
   const ids = (idsQuery.data as readonly bigint[] | undefined) ?? [];
@@ -50,7 +52,7 @@ export function useBaskets(address?: Address) {
       functionName: "getBasket",
       args: [id],
     })),
-    query: { enabled: enabled && ids.length > 0 },
+    query: { enabled: enabled && ids.length > 0, refetchOnMount: "always" },
   });
 
   const baskets: Basket[] = [];
