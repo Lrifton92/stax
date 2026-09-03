@@ -3,43 +3,67 @@
 Quest: Base **Builder Quest — Tokenized Stocks** ($5,000). Submit via (1) a Loom
 demo posted on X tagging **@buildonbase**, and (2) the Google Form.
 
-## Google Form answers (fill URLs after deploy)
+## Links
+- **Live app:** https://stax-mocha.vercel.app
+- **Source (public):** https://github.com/Lrifton92/stax
+- **Registry contract (Base mainnet, verified):**
+  https://base.blockscout.com/address/0x17e95a8a4d7bca00361c262593fb1abb0cf35271?tab=contract
+- **Builder Code:** `bc_7bkuc3p1` (encoded suffix in Vercel `NEXT_PUBLIC_BUILDER_CODE`)
+
+## Google Form answers
 - **Project Name:** `STAX`
 - **What does it solve (1-2 lines):**
-  `STAX is a wallet-native way to build, value, save onchain, and set price alerts on baskets of Coinbase tokenized stocks on Base. It turns single tokenized stocks into a personal, composable index with live multiplier- and staleness-aware Chainlink pricing.`
-- **Demo Video Link:** `<Loom URL>`  (record per script below)
+  `STAX is a wallet-native way to build, value, save onchain, and set price alerts on baskets of Coinbase tokenized stocks (B20) on Base. It turns single tokenized stocks into a personal, composable index — with an AI composer that turns plain-English exposure into a conviction-weighted basket, live multiplier- and staleness-aware Chainlink pricing, and a custody-free onchain registry.`
+- **Demo Video Link:** `<Loom URL>`
 - **Live Project Link:** `https://stax-mocha.vercel.app`
-- **Builder Code:** `bc_7bkuc3p1`  (encoded hex suffix already in .env / Vercel as NEXT_PUBLIC_BUILDER_CODE)
+- **Builder Code:** `bc_7bkuc3p1`
+
+## What's built (final state)
+- **AI composer** — plain-English exposure ("AI chip makers", "big tech + crypto",
+  "top 3 growth") → conviction-weighted basket, match explained (deterministic
+  rule engine, no key/cost).
+- **Basket builder** — pick/weight the full 13-token Base catalogue, live per-unit
+  value, save onchain (custody-free `BasketRegistry.createBasket`).
+- **Portfolio** — saved baskets with live value + per-token price alerts onchain.
+- **Trade** — verify any asset onchain + compliant-venue handoff (no faked DEX
+  route for compliance-gated B20 tokens).
+- **App-shaped**: tabbed Build / Portfolio / Trade, responsive down to the Base
+  Mini App mobile frame, Kore-terminal aesthetic.
+- **Base stack**: OnchainKit + MiniKit (Mini App), Base Account / Smart Wallet,
+  Builder Codes, B20 registry + Chainlink feeds, base-foundry.
 
 ## Loom demo script (~90s, tag @buildonbase in the X post)
-1. **Hook (10s):** "Coinbase tokenized stocks are live on Base, but there's no
+1. **Hook (10s):** "Coinbase tokenized stocks are live on Base — but there's no
    wallet-native way to hold them as a portfolio. STAX fixes that."
-2. **Live prices (15s):** show the grid — 13 tokenized stocks, prices are live
-   Chainlink feeds, multiplier-adjusted, and flagged stale when a feed is old.
-3. **Build a basket (20s):** select AAPLc + NVDAc + MSFTc, weights auto-balance,
-   basket value updates live.
-4. **Save onchain (20s):** connect Base Account (passkey), tap "Save basket
-   onchain" — gasless via Paymaster. Show the tx confirm. "That's a real onchain
-   interaction, no gas, from any wallet."
-5. **Alert + memestock (15s):** set a price alert on the basket; toggle "Link OGB
-   as community token" to show the memestock angle.
-6. **Close (10s):** "Built entirely on the Base stack — OnchainKit, MiniKit,
-   Base Account, Paymaster, Builder Codes, B20 + Chainlink. It runs as a Mini App
-   inside the Base app. @buildonbase"
+2. **AI composer (20s):** type "AI chip makers" → basket fills conviction-weighted
+   (NVDA heaviest), match explained. "Describe an exposure, get an index."
+3. **Live prices (10s):** the 13-token catalogue, prices are live Chainlink feeds,
+   multiplier-adjusted and flagged stale when a feed is old.
+4. **Save onchain (20s):** connect wallet, "Save basket onchain" → real tx on Base
+   (small fee; sponsored for Smart Wallet accounts). "A real onchain interaction
+   from your wallet — and it auto-includes my OGB community token."
+5. **Portfolio + alert (15s):** Portfolio tab shows the saved basket with live
+   value; set a price alert onchain.
+6. **Close (15s):** "Custody-free contract, verified onchain and open source.
+   Covers the full Base tokenized-stock catalogue. Runs as a Mini App inside the
+   Base app. @buildonbase"
 
-## Pre-submission checklist (Soufian)
-- [x] Builder Code `bc_7bkuc3p1` generated (base.dev), encoded suffix in .env + Vercel.
-- [ ] Add OnchainKit paymaster endpoint → `.env` `NEXT_PUBLIC_CDP_PAYMASTER` (CDP).
-- [x] BasketRegistry deployed to Base mainnet: 0x17E95A8A4D7bca00361c262593fb1abB0Cf35271 (tx 0xc69a52b1..., block 50816781).
-- [~] (done) Deploy `BasketRegistry` to Base mainnet (you sign):
-      `cd contracts && base-forge script script/DeployBasketRegistry.s.sol --rpc-url https://mainnet.base.org --account lrifton-0x1dee --sender 0x1deeaEc4250e66702E22777Ec1E3A70B19745A72 --broadcast`
-      → put address in `.env` `NEXT_PUBLIC_REGISTRY_ADDRESS`.
+## Pre-submission checklist
+- [x] Builder Code `bc_7bkuc3p1` (base.dev), encoded suffix in Vercel env.
+- [x] `BasketRegistry` deployed to Base mainnet: `0x17E95A8A4D7bca00361c262593fb1abB0Cf35271`
+      (tx 0xc69a52b1, block 50816781) and **verified** on Blockscout.
+- [x] Real save from 0x1dee on the live site (2 baskets, tx 0x13b4830f) — real interaction proven.
 - [x] Deployed to Vercel: https://stax-mocha.vercel.app (NEXT_PUBLIC_* set).
-- [ ] Restrict the OnchainKit client key to the Vercel domain (CDP portal).
-- [ ] Sign the Mini App manifest: `npx create-onchain --manifest` → FARCASTER_* env.
-- [ ] Do a real save from 0x1dee on the live site → confirms a real interaction.
+- [x] Source pushed public: https://github.com/Lrifton92/stax.
+- [x] OnchainKit client key restricted to `stax-mocha.vercel.app` (CDP portal).
+- [x] Security pass: 0 high/critical deps (overrides), hardening headers, contract audited.
+- [ ] **Sign the Mini App manifest** (needed for verified Mini App in the Base app):
+      `npx create-onchain --manifest` → set `FARCASTER_HEADER/PAYLOAD/SIGNATURE` in
+      Vercel env, redeploy. (Prod manifest `accountAssociation` is currently empty.)
+- [ ] (optional) Paymaster endpoint → `NEXT_PUBLIC_CDP_PAYMASTER` for gasless Smart-Wallet saves.
 - [ ] Record Loom, post on X tagging @buildonbase, submit the Google Form.
 
-## Onchain-verified proof of concept (already true today)
-- Contract compiles + 9 base-forge tests pass; libs 14 vitest tests pass; app builds.
-- Live Chainlink prices read from Base mainnet for all 13 tokens (screenshot).
+## Verified proof (true today)
+- Contract custody-free, verified onchain; 9 base-forge tests; 27 vitest tests; build green.
+- Live Chainlink prices for all 13 tokens read from Base mainnet.
+- `npm audit`: 0 high/critical (27 moderate remain, all transitive in the wallet stack).
