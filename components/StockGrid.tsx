@@ -5,59 +5,11 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { motion, useReducedMotion } from "motion/react";
 import type { PricePoint } from "../hooks/useStockPrices";
 import { PriceTicker } from "./PriceTicker";
-
-const DOMAINS: Record<string, string> = {
-  AAPL: "apple.com",
-  AMZN: "amazon.com",
-  COIN: "coinbase.com",
-  CRCL: "circle.com",
-  GOOGL: "google.com",
-  INTC: "intel.com",
-  META: "meta.com",
-  MSFT: "microsoft.com",
-  MSTR: "strategy.com",
-  NVDA: "nvidia.com",
-  SNDK: "sandisk.com",
-  SPCX: "spacex.com",
-  TSLA: "tesla.com",
-};
+import { TokenLogo } from "./TokenLogo";
 
 const MIN_CARD = 230;
 const GAP = 12;
 const ROW_H = 128; // card height + gap
-
-function TokenLogo({ symbol }: { symbol: string }) {
-  const ticker = symbol.replace(/c$/, "");
-  const domain = DOMAINS[ticker];
-  const [failed, setFailed] = useState(!domain);
-  const box: React.CSSProperties = {
-    width: 34, height: 34, borderRadius: 10, flexShrink: 0,
-    display: "flex", alignItems: "center", justifyContent: "center",
-    background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-    overflow: "hidden",
-  };
-  if (failed) {
-    return (
-      <div style={box}>
-        <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--fg-2)" }}>
-          {ticker.slice(0, 2)}
-        </span>
-      </div>
-    );
-  }
-  return (
-    <div style={box}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`}
-        alt={ticker}
-        width={22} height={22}
-        style={{ width: 22, height: 22, objectFit: "contain" }}
-        onError={() => setFailed(true)}
-      />
-    </div>
-  );
-}
 
 function Card({
   p, isSel, onToggle, reduce,

@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import type { Address } from "viem";
 import type { Basket } from "../hooks/useBaskets";
+import type { PricePoint } from "../hooks/useStockPrices";
 import { STOCK_TOKENS } from "../lib/b20";
+import { formatPrice } from "../lib/pricing";
 import { useSetAlert, type AlertDirection } from "../hooks/useSetAlert";
 import { SectionHeader } from "./SectionHeader";
 import { BellIcon } from "./icons";
@@ -26,7 +28,13 @@ function labelFor(addr: Address): string {
 
 // Set a price alert on a token inside a saved basket. Needs a basketId, so it's
 // only usable once at least one basket exists.
-export function AlertForm({ basket }: { basket?: Basket | null }) {
+export function AlertForm({
+  basket,
+  points,
+}: {
+  basket?: Basket | null;
+  points?: PricePoint[];
+}) {
   const { setAlert, status, error } = useSetAlert();
 
   // Token options come from the selected basket; fall back to the full stock
@@ -92,9 +100,19 @@ export function AlertForm({ basket }: { basket?: Basket | null }) {
         ))}
       </select>
 
-      <label style={{ fontSize: 12, color: "var(--muted)" }}>
-        Threshold (USD)
-      </label>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <label style={{ fontSize: 12, color: "var(--muted)" }}>Threshold (USD)</label>
+        {(() => {
+          const pt = points?.find(
+            (p) => p.token.address.toLowerCase() === (chosenToken || "").toLowerCase(),
+          );
+          return pt && pt.price !== null ? (
+            <span className="mono" style={{ fontSize: 11, color: "var(--fg-3)" }}>
+              now ${formatPrice(pt.price)}
+            </span>
+          ) : null;
+        })()}
+      </div>
       <input
         value={thresholdUsd}
         onChange={(e) => setThresholdUsd(e.target.value)}

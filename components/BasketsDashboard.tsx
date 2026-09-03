@@ -4,6 +4,7 @@ import type { Address } from "viem";
 import { useBaskets } from "../hooks/useBaskets";
 import { getRegistryAddress } from "../lib/registry";
 import { BasketCard } from "./BasketCard";
+import type { PricePoint } from "../hooks/useStockPrices";
 
 const ZERO_ADDRESS =
   "0x0000000000000000000000000000000000000000" as Address;
@@ -26,10 +27,12 @@ function Empty({ children }: { children: React.ReactNode }) {
 
 export function BasketsDashboard({
   address,
+  points,
   selectedId,
   onSelect,
 }: {
   address?: Address;
+  points?: PricePoint[];
   selectedId?: bigint | null;
   onSelect?: (id: bigint) => void;
 }) {
@@ -61,6 +64,7 @@ export function BasketsDashboard({
         <BasketCard
           key={b.id.toString()}
           basket={b}
+          points={points}
           selected={selectedId != null && b.id === selectedId}
           onSelect={onSelect}
         />

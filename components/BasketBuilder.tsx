@@ -9,14 +9,17 @@ import { useCreateBasket } from "../hooks/useCreateBasket";
 import { useAccount } from "wagmi";
 import { SectionHeader } from "./SectionHeader";
 import { BasketIcon } from "./icons";
+import { TokenLogo } from "./TokenLogo";
 
 // Hero: compose a weighted basket, see live value, save it onchain.
 export function BasketBuilder({
   points,
   selected,
+  onToggle,
 }: {
   points: PricePoint[];
   selected: string[];
+  onToggle?: (symbol: string) => void;
 }) {
   const { isConnected } = useAccount();
   const { create, status, error, txHash } = useCreateBasket();
@@ -79,29 +82,72 @@ export function BasketBuilder({
       />
 
       {chosen.length === 0 ? (
-        <p style={{ color: "var(--muted)", fontSize: 13, margin: 0 }}>
-          Pick stocks above to compose a basket.
-        </p>
+        <div
+          style={{
+            border: "1px dashed var(--border)",
+            borderRadius: 12,
+            padding: "22px 14px",
+            textAlign: "center",
+            color: "var(--muted)",
+            fontSize: 12.5,
+          }}
+        >
+          Pick stocks from Markets to compose a basket.
+        </div>
       ) : (
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6 }}>
           {chosen.map((c, i) => (
             <li
               key={c.token.symbol}
-              className="mono"
-              style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "7px 8px",
+                borderRadius: 10,
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid var(--border)",
+              }}
             >
-              <span>{c.token.symbol}</span>
-              <span style={{ color: "var(--muted)" }}>
+              <TokenLogo symbol={c.token.symbol} size={24} />
+              <span className="mono" style={{ fontSize: 12.5, fontWeight: 600 }}>
+                {c.token.symbol}
+              </span>
+              <span className="mono" style={{ marginLeft: "auto", fontSize: 12, color: "var(--accent)" }}>
                 {(weights[i] / 100).toFixed(1)}%
               </span>
+              {onToggle && (
+                <button
+                  onClick={() => onToggle(c.token.symbol)}
+                  aria-label={`Remove ${c.token.symbol}`}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 6,
+                    border: "1px solid var(--border)",
+                    background: "transparent",
+                    color: "var(--muted)",
+                    cursor: "pointer",
+                    fontSize: 13,
+                    lineHeight: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </li>
           ))}
         </ul>
       )}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border)", paddingTop: 12 }}>
-        <span style={{ fontSize: 12, color: "var(--muted)" }}>Basket value (per unit)</span>
-        <span className="mono" style={{ fontSize: 18 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop: "1px solid var(--border)", paddingTop: 12 }}>
+        <span style={{ fontSize: 10.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--fg-3)" }}>
+          Basket value / unit
+        </span>
+        <span className="kore-money" style={{ fontSize: 24 }}>
           {value === null ? "—" : `$${formatPrice(value)}`}
         </span>
       </div>

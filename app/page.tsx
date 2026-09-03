@@ -221,6 +221,7 @@ export default function Page() {
             />
             <BasketsDashboard
               address={address}
+              points={points}
               selectedId={activeBasket?.id ?? null}
               onSelect={setSelectedBasketId}
             />
@@ -239,8 +240,8 @@ export default function Page() {
             borderLeft: "1px solid var(--border)",
           }}
         >
-          <BasketBuilder points={points} selected={[...selected]} />
-          <AlertForm basket={activeBasket} />
+          <BasketBuilder points={points} selected={[...selected]} onToggle={toggle} />
+          <AlertForm basket={activeBasket} points={points} />
         </div>
       </div>
     </Shell>
