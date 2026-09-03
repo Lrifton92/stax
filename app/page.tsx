@@ -13,6 +13,7 @@ import { EligibilityBadge } from "../components/EligibilityBadge";
 import { TickerRibbon } from "../components/TickerRibbon";
 import { SectionHeader } from "../components/SectionHeader";
 import { MarketsIcon, LayersIcon } from "../components/icons";
+import { sectorOf } from "../lib/b20";
 import { useStockPrices } from "../hooks/useStockPrices";
 import { useBaskets } from "../hooks/useBaskets";
 
@@ -61,16 +62,19 @@ export default function Page() {
   const reduce = useReducedMotion();
   const live = points.filter((p) => p.price !== null && !p.stale).length;
 
-  // Search — keeps the grid usable when the asset list grows to hundreds.
+  // Search + sector filter — keep the grid usable as the asset list grows.
   const [query, setQuery] = useState("");
+  const [sector, setSector] = useState("All");
   const q = query.trim().toLowerCase();
-  const filtered = q
-    ? points.filter(
-        (p) =>
-          p.token.symbol.toLowerCase().includes(q) ||
-          p.token.name.toLowerCase().includes(q),
-      )
-    : points;
+  const sectors = ["All", ...Array.from(new Set(points.map((p) => sectorOf(p.token.symbol)))).sort()];
+  const filtered = points.filter((p) => {
+    const matchQ =
+      !q ||
+      p.token.symbol.toLowerCase().includes(q) ||
+      p.token.name.toLowerCase().includes(q);
+    const matchS = sector === "All" || sectorOf(p.token.symbol) === sector;
+    return matchQ && matchS;
+  });
 
   const reveal = {
     hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(8px)" },
@@ -166,24 +170,41 @@ export default function Page() {
                 color: "var(--text)",
                 padding: "11px 14px",
                 fontSize: 13,
-                marginBottom: 14,
+                marginBottom: 12,
               }}
             />
-            <div
-              style={{
-                maxHeight: "58vh",
-                overflowY: "auto",
-                paddingRight: 2,
-                paddingBottom: 2,
-              }}
-            >
-              <StockGrid points={filtered} selected={selected} onToggle={toggle} />
-              {filtered.length === 0 && (
-                <p style={{ color: "var(--muted)", fontSize: 13, padding: "20px 4px" }}>
-                  No asset matches “{query}”.
-                </p>
-              )}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+              {sectors.map((s) => {
+                const on = sector === s;
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setSector(s)}
+                    className="mono"
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      padding: "6px 12px",
+                      borderRadius: 999,
+                      cursor: "pointer",
+                      color: on ? "var(--accent)" : "var(--fg-3)",
+                      background: on ? "var(--accent-soft)" : "rgba(255,255,255,0.03)",
+                      border: `1px solid ${on ? "rgba(34,197,94,0.4)" : "var(--border)"}`,
+                    }}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
             </div>
+            {filtered.length === 0 ? (
+              <p style={{ color: "var(--muted)", fontSize: 13, padding: "20px 4px" }}>
+                No asset matches your filters.
+              </p>
+            ) : (
+              <StockGrid points={filtered} selected={selected} onToggle={toggle} />
+            )}
           </section>
 
           <section>

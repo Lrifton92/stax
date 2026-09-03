@@ -168,3 +168,24 @@ export async function isPaused(
     args: [token],
   }) as Promise<boolean>;
 }
+
+// Sector classification for filtering (keyed by token symbol).
+export const SECTORS: Record<string, string> = {
+  AAPLc: "Tech",
+  MSFTc: "Tech",
+  GOOGLc: "Tech",
+  METAc: "Tech",
+  NVDAc: "Semis",
+  INTCc: "Semis",
+  SNDKc: "Semis",
+  AMZNc: "Consumer",
+  TSLAc: "Auto",
+  COINc: "Crypto",
+  CRCLc: "Crypto",
+  MSTRc: "Crypto",
+  SPCXc: "Space",
+};
+
+export function sectorOf(symbol: string): string {
+  return SECTORS[symbol] ?? "Other";
+}
