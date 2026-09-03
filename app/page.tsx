@@ -61,6 +61,17 @@ export default function Page() {
   const reduce = useReducedMotion();
   const live = points.filter((p) => p.price !== null && !p.stale).length;
 
+  // Search — keeps the grid usable when the asset list grows to hundreds.
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? points.filter(
+        (p) =>
+          p.token.symbol.toLowerCase().includes(q) ||
+          p.token.name.toLowerCase().includes(q),
+      )
+    : points;
+
   const reveal = {
     hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(8px)" },
     show: {
@@ -140,9 +151,39 @@ export default function Page() {
             <SectionHeader
               icon={<MarketsIcon />}
               title="Markets"
-              meta="13 assets · live"
+              meta={`${points.length} assets · live`}
             />
-            <StockGrid points={points} selected={selected} onToggle={toggle} />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search ticker or company…"
+              className="mono"
+              style={{
+                width: "100%",
+                background: "var(--bg-2)",
+                border: "1px solid var(--border)",
+                borderRadius: 12,
+                color: "var(--text)",
+                padding: "11px 14px",
+                fontSize: 13,
+                marginBottom: 14,
+              }}
+            />
+            <div
+              style={{
+                maxHeight: "58vh",
+                overflowY: "auto",
+                paddingRight: 2,
+                paddingBottom: 2,
+              }}
+            >
+              <StockGrid points={filtered} selected={selected} onToggle={toggle} />
+              {filtered.length === 0 && (
+                <p style={{ color: "var(--muted)", fontSize: 13, padding: "20px 4px" }}>
+                  No asset matches “{query}”.
+                </p>
+              )}
+            </div>
           </section>
 
           <section>
@@ -167,6 +208,8 @@ export default function Page() {
             gap: 16,
             position: "sticky",
             top: 16,
+            paddingLeft: 20,
+            borderLeft: "1px solid var(--border)",
           }}
         >
           <BasketBuilder points={points} selected={[...selected]} />

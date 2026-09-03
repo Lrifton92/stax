@@ -16,7 +16,9 @@ export function SectionHeader({
         display: "flex",
         alignItems: "center",
         gap: 10,
-        marginBottom: 14,
+        marginBottom: 16,
+        paddingBottom: 12,
+        borderBottom: "1px solid var(--border)",
       }}
     >
       <span
