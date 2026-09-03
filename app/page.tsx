@@ -11,6 +11,7 @@ import { BasketsDashboard } from "../components/BasketsDashboard";
 import { AlertForm } from "../components/AlertForm";
 import { EligibilityBadge } from "../components/EligibilityBadge";
 import { TickerRibbon } from "../components/TickerRibbon";
+import { AnimatedWords } from "../components/AnimatedWords";
 import { SectionHeader } from "../components/SectionHeader";
 import { MarketsIcon, LayersIcon } from "../components/icons";
 import { sectorOf } from "../lib/b20";
@@ -99,15 +100,20 @@ export default function Page() {
         variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
         style={{ marginBottom: 26 }}
       >
-        <motion.div
-          variants={reveal}
-          style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}
-        >
-          <h1 style={{ fontSize: 30, margin: 0, letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-            Own the market. Onchain.
-          </h1>
-          <EligibilityBadge />
-        </motion.div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <AnimatedWords
+            text="Own the market. Onchain."
+            as="h1"
+            style={{ fontSize: 30, letterSpacing: "-0.01em", lineHeight: 1.1 }}
+          />
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+          >
+            <EligibilityBadge />
+          </motion.span>
+        </div>
 
         <motion.p
           variants={reveal}
