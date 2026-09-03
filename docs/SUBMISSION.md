@@ -57,9 +57,11 @@ demo posted on X tagging **@buildonbase**, and (2) the Google Form.
 - [x] Source pushed public: https://github.com/Lrifton92/stax.
 - [x] OnchainKit client key restricted to `stax-mocha.vercel.app` (CDP portal).
 - [x] Security pass: 0 high/critical deps (overrides), hardening headers, contract audited.
-- [ ] **Sign the Mini App manifest** (needed for verified Mini App in the Base app):
-      `npx create-onchain --manifest` → set `FARCASTER_HEADER/PAYLOAD/SIGNATURE` in
-      Vercel env, redeploy. (Prod manifest `accountAssociation` is currently empty.)
+- [deferred] Sign the Mini App manifest (`accountAssociation`) — bonus, not required
+      to submit. Needs a Farcaster account (currently lost). When available: sign the
+      domain `stax-mocha.vercel.app` at farcaster.xyz → Developers → Mini Apps →
+      Manifest, then set `FARCASTER_HEADER/PAYLOAD/SIGNATURE` in Vercel env + redeploy.
+      The app runs and carries full `miniapp` metadata without it.
 - [ ] (optional) Paymaster endpoint → `NEXT_PUBLIC_CDP_PAYMASTER` for gasless Smart-Wallet saves.
 - [ ] Record Loom, post on X tagging @buildonbase, submit the Google Form.
 
