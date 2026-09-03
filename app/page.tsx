@@ -20,6 +20,7 @@ import { MarketsIcon, LayersIcon, BasketIcon } from "../components/icons";
 import { sectorOf } from "../lib/b20";
 import { useStockPrices } from "../hooks/useStockPrices";
 import { useBaskets } from "../hooks/useBaskets";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
@@ -51,6 +52,7 @@ export default function Page() {
   // conviction weights from the AI composer; a manual edit clears them.
   const [aiWeights, setAiWeights] = useState<Record<string, number> | null>(null);
   const [tab, setTab] = useState("build");
+  const narrow = useMediaQuery("(max-width: 820px)"); // Mini App / mobile
 
   useEffect(() => {
     if (!isFrameReady) setFrameReady();
@@ -170,7 +172,7 @@ export default function Page() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 360px",
+          gridTemplateColumns: narrow ? "1fr" : "minmax(0, 1fr) 360px",
           gap: 20,
           alignItems: "start",
         }}
@@ -181,10 +183,11 @@ export default function Page() {
             display: "flex",
             flexDirection: "column",
             gap: 16,
-            position: "sticky",
+            position: narrow ? "static" : "sticky",
             top: 16,
-            paddingLeft: 20,
-            borderLeft: "1px solid var(--border)",
+            paddingLeft: narrow ? 0 : 20,
+            borderLeft: narrow ? "none" : "1px solid var(--border)",
+            order: narrow ? -1 : 0, // compose panel on top on mobile
           }}
         >
           <AIComposer points={points} onCompose={applyComposition} />
@@ -201,7 +204,7 @@ export default function Page() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 340px",
+          gridTemplateColumns: narrow ? "1fr" : "minmax(0, 1fr) 340px",
           gap: 20,
           alignItems: "start",
         }}
@@ -221,10 +224,10 @@ export default function Page() {
         </section>
         <div
           style={{
-            position: "sticky",
+            position: narrow ? "static" : "sticky",
             top: 16,
-            paddingLeft: 20,
-            borderLeft: "1px solid var(--border)",
+            paddingLeft: narrow ? 0 : 20,
+            borderLeft: narrow ? "none" : "1px solid var(--border)",
           }}
         >
           <AlertForm basket={activeBasket} points={points} />

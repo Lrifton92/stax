@@ -1,8 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "../styles/tokens.css";
 import { Providers } from "./providers";
 
 const SITE = process.env.NEXT_PUBLIC_URL ?? "https://stax-mocha.vercel.app";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#000000",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
