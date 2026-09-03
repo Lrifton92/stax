@@ -47,3 +47,12 @@ export function BellIcon({ size = 16 }: P) {
     </svg>
   );
 }
+
+export function SparkIcon({ size = 16 }: P) {
+  return (
+    <svg {...base(size)}>
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M12 8.5 13.4 11 16 12l-2.6 1L12 15.5 10.6 13 8 12l2.6-1L12 8.5Z" />
+    </svg>
+  );
+}

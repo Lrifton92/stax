@@ -7,8 +7,10 @@ import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { Shell } from "../components/Shell";
 import { StockGrid } from "../components/StockGrid";
 import { BasketBuilder } from "../components/BasketBuilder";
+import { AIComposer } from "../components/AIComposer";
 import { BasketsDashboard } from "../components/BasketsDashboard";
 import { AlertForm } from "../components/AlertForm";
+import { TradePanel } from "../components/TradePanel";
 import { EligibilityBadge } from "../components/EligibilityBadge";
 import { TickerRibbon } from "../components/TickerRibbon";
 import { AnimatedWords } from "../components/AnimatedWords";
@@ -240,8 +242,13 @@ export default function Page() {
             borderLeft: "1px solid var(--border)",
           }}
         >
+          <AIComposer
+            points={points}
+            onCompose={(syms) => setSelected(new Set(syms))}
+          />
           <BasketBuilder points={points} selected={[...selected]} onToggle={toggle} />
           <AlertForm basket={activeBasket} points={points} />
+          <TradePanel basket={activeBasket} points={points} />
         </div>
       </div>
     </Shell>
