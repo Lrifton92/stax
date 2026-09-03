@@ -6,7 +6,8 @@ import type { ReactNode } from "react";
 
 // OnchainKitProvider (v1.x) sets up wagmi + react-query internally and, with
 // `miniKit`, mounts the MiniKit provider so STAX runs as a Base Mini App.
-// Paymaster makes basket-save / alert txs gasless for the user.
+// A paymaster (when configured) sponsors gas for Smart Wallet accounts only;
+// injected EOAs (MetaMask/Rabby) pay a small Base fee on save/alert txs.
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <OnchainKitProvider

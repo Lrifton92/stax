@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 import { motion, useReducedMotion } from "motion/react";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
@@ -15,7 +15,8 @@ import { EligibilityBadge } from "../components/EligibilityBadge";
 import { TickerRibbon } from "../components/TickerRibbon";
 import { AnimatedWords } from "../components/AnimatedWords";
 import { SectionHeader } from "../components/SectionHeader";
-import { MarketsIcon, LayersIcon } from "../components/icons";
+import { TabBar, type Tab } from "../components/TabBar";
+import { MarketsIcon, LayersIcon, BasketIcon } from "../components/icons";
 import { sectorOf } from "../lib/b20";
 import { useStockPrices } from "../hooks/useStockPrices";
 import { useBaskets } from "../hooks/useBaskets";
@@ -47,17 +48,28 @@ export default function Page() {
   const { baskets } = useBaskets(address);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [selectedBasketId, setSelectedBasketId] = useState<bigint | null>(null);
+  // conviction weights from the AI composer; a manual edit clears them.
+  const [aiWeights, setAiWeights] = useState<Record<string, number> | null>(null);
+  const [tab, setTab] = useState("build");
 
   useEffect(() => {
     if (!isFrameReady) setFrameReady();
   }, [isFrameReady, setFrameReady]);
 
   function toggle(symbol: string) {
+    setAiWeights(null); // hand-editing the basket drops AI conviction weights
     setSelected((prev) => {
       const next = new Set(prev);
       next.has(symbol) ? next.delete(symbol) : next.add(symbol);
       return next;
     });
+  }
+
+  function applyComposition(symbols: string[], weightsBps: number[]) {
+    setSelected(new Set(symbols));
+    setAiWeights(
+      Object.fromEntries(symbols.map((s, i) => [s, weightsBps[i] ?? 0])),
+    );
   }
 
   const activeBasket =
@@ -89,66 +101,72 @@ export default function Page() {
     },
   };
 
-  return (
-    <Shell>
-      {/* full-bleed exchange ticker ribbon */}
-      <div style={{ margin: "-26px -22px 22px" }}>
-        <TickerRibbon points={points} />
+  const tabs: Tab[] = [
+    { key: "build", label: "Build", icon: <BasketIcon size={15} /> },
+    { key: "portfolio", label: "Portfolio", icon: <LayersIcon size={15} /> },
+    { key: "trade", label: "Trade", icon: <MarketsIcon size={15} /> },
+  ];
+
+  const markets = (
+    <section style={{ minWidth: 0 }}>
+      <SectionHeader
+        icon={<MarketsIcon />}
+        title="Markets"
+        meta={`${points.length} assets · live`}
+      />
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search ticker or company…"
+        className="mono"
+        style={{
+          width: "100%",
+          background: "var(--bg-2)",
+          border: "1px solid var(--border)",
+          borderRadius: 12,
+          color: "var(--text)",
+          padding: "11px 14px",
+          fontSize: 13,
+          marginBottom: 12,
+        }}
+      />
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+        {sectors.map((s) => {
+          const on = sector === s;
+          return (
+            <button
+              key={s}
+              onClick={() => setSector(s)}
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                padding: "6px 12px",
+                borderRadius: 999,
+                cursor: "pointer",
+                color: on ? "var(--accent)" : "var(--fg-3)",
+                background: on ? "var(--accent-soft)" : "rgba(255,255,255,0.03)",
+                border: `1px solid ${on ? "rgba(34,197,94,0.4)" : "var(--border)"}`,
+              }}
+            >
+              {s}
+            </button>
+          );
+        })}
       </div>
+      {filtered.length === 0 ? (
+        <p style={{ color: "var(--muted)", fontSize: 13, padding: "20px 4px" }}>
+          No asset matches your filters.
+        </p>
+      ) : (
+        <StockGrid points={filtered} selected={selected} onToggle={toggle} />
+      )}
+    </section>
+  );
 
-      <motion.section
-        initial="hidden"
-        animate="show"
-        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
-        style={{ marginBottom: 26 }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <AnimatedWords
-            text="Own the market. Onchain."
-            as="h1"
-            style={{ fontSize: 30, letterSpacing: "-0.01em", lineHeight: 1.1 }}
-          />
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.4 }}
-          >
-            <EligibilityBadge />
-          </motion.span>
-        </div>
-
-        <motion.p
-          variants={reveal}
-          style={{
-            color: "var(--fg-3)",
-            margin: "10px 0 0",
-            maxWidth: 560,
-            fontSize: 11.5,
-            lineHeight: 1.55,
-            letterSpacing: "0.01em",
-          }}
-        >
-          Build a basket of Coinbase tokenized stocks, weight it, and save it
-          onchain on Base. Live prices are Chainlink feeds, multiplier- and
-          staleness-aware. Saving and alerts work for any wallet; trading is
-          enabled for eligible accounts.
-        </motion.p>
-
-        <motion.div
-          variants={reveal}
-          style={{
-            display: "flex",
-            gap: 34,
-            marginTop: 20,
-            flexWrap: "wrap",
-          }}
-        >
-          <Stat value="13" label="Tokenized stocks" />
-          <Stat value={live > 0 ? String(live) : "—"} label="Live Chainlink feeds" />
-          <Stat value="Base" label="Onchain · gasless-ready" />
-        </motion.div>
-      </motion.section>
-
+  const panels: Record<string, ReactNode> = {
+    build: (
       <div
         style={{
           display: "grid",
@@ -157,80 +175,7 @@ export default function Page() {
           alignItems: "start",
         }}
       >
-        {/* LEFT: markets + saved baskets */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 30, minWidth: 0 }}>
-          <section>
-            <SectionHeader
-              icon={<MarketsIcon />}
-              title="Markets"
-              meta={`${points.length} assets · live`}
-            />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search ticker or company…"
-              className="mono"
-              style={{
-                width: "100%",
-                background: "var(--bg-2)",
-                border: "1px solid var(--border)",
-                borderRadius: 12,
-                color: "var(--text)",
-                padding: "11px 14px",
-                fontSize: 13,
-                marginBottom: 12,
-              }}
-            />
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-              {sectors.map((s) => {
-                const on = sector === s;
-                return (
-                  <button
-                    key={s}
-                    onClick={() => setSector(s)}
-                    className="mono"
-                    style={{
-                      fontSize: 11,
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      padding: "6px 12px",
-                      borderRadius: 999,
-                      cursor: "pointer",
-                      color: on ? "var(--accent)" : "var(--fg-3)",
-                      background: on ? "var(--accent-soft)" : "rgba(255,255,255,0.03)",
-                      border: `1px solid ${on ? "rgba(34,197,94,0.4)" : "var(--border)"}`,
-                    }}
-                  >
-                    {s}
-                  </button>
-                );
-              })}
-            </div>
-            {filtered.length === 0 ? (
-              <p style={{ color: "var(--muted)", fontSize: 13, padding: "20px 4px" }}>
-                No asset matches your filters.
-              </p>
-            ) : (
-              <StockGrid points={filtered} selected={selected} onToggle={toggle} />
-            )}
-          </section>
-
-          <section>
-            <SectionHeader
-              icon={<LayersIcon />}
-              title="My baskets"
-              meta={baskets.length > 0 ? `${baskets.length} saved` : undefined}
-            />
-            <BasketsDashboard
-              address={address}
-              points={points}
-              selectedId={activeBasket?.id ?? null}
-              onSelect={setSelectedBasketId}
-            />
-          </section>
-        </div>
-
-        {/* RIGHT: sticky control panel — builder + alerts */}
+        {markets}
         <div
           style={{
             display: "flex",
@@ -242,15 +187,115 @@ export default function Page() {
             borderLeft: "1px solid var(--border)",
           }}
         >
-          <AIComposer
+          <AIComposer points={points} onCompose={applyComposition} />
+          <BasketBuilder
             points={points}
-            onCompose={(syms) => setSelected(new Set(syms))}
+            selected={[...selected]}
+            onToggle={toggle}
+            weightOverride={aiWeights}
           />
-          <BasketBuilder points={points} selected={[...selected]} onToggle={toggle} />
-          <AlertForm basket={activeBasket} points={points} />
-          <TradePanel basket={activeBasket} points={points} />
         </div>
       </div>
+    ),
+    portfolio: (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) 340px",
+          gap: 20,
+          alignItems: "start",
+        }}
+      >
+        <section style={{ minWidth: 0 }}>
+          <SectionHeader
+            icon={<LayersIcon />}
+            title="My baskets"
+            meta={baskets.length > 0 ? `${baskets.length} saved` : undefined}
+          />
+          <BasketsDashboard
+            address={address}
+            points={points}
+            selectedId={activeBasket?.id ?? null}
+            onSelect={setSelectedBasketId}
+          />
+        </section>
+        <div
+          style={{
+            position: "sticky",
+            top: 16,
+            paddingLeft: 20,
+            borderLeft: "1px solid var(--border)",
+          }}
+        >
+          <AlertForm basket={activeBasket} points={points} />
+        </div>
+      </div>
+    ),
+    trade: (
+      <div style={{ maxWidth: 460 }}>
+        <TradePanel basket={activeBasket} points={points} />
+      </div>
+    ),
+  };
+
+  return (
+    <Shell>
+      {/* full-bleed exchange ticker ribbon */}
+      <div style={{ margin: "-26px -22px 22px" }}>
+        <TickerRibbon points={points} />
+      </div>
+
+      {/* compact hero band */}
+      <motion.section
+        initial="hidden"
+        animate="show"
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 20,
+          flexWrap: "wrap",
+          marginBottom: 18,
+        }}
+      >
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <AnimatedWords
+              text="Own the market. Onchain."
+              as="h1"
+              style={{ fontSize: 26, letterSpacing: "-0.01em", lineHeight: 1.1 }}
+            />
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.4 }}
+            >
+              <EligibilityBadge />
+            </motion.span>
+          </div>
+        </div>
+        <motion.div variants={reveal} style={{ display: "flex", gap: 30, flexWrap: "wrap" }}>
+          <Stat value="13" label="Tokenized stocks" />
+          <Stat value={live > 0 ? String(live) : "—"} label="Live Chainlink feeds" />
+          <Stat value="Base" label="Mainnet · low fees" />
+        </motion.div>
+      </motion.section>
+
+      <div style={{ marginBottom: 22 }}>
+        <TabBar tabs={tabs} active={tab} onChange={setTab} />
+      </div>
+
+      {/* keyed remount plays a fade-in per tab — no AnimatePresence, so live
+          price re-renders can't strand the enter animation at opacity 0. */}
+      <motion.div
+        key={tab}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {panels[tab]}
+      </motion.div>
     </Shell>
   );
 }

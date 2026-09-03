@@ -12,6 +12,7 @@ import { SECTORS } from "./b20";
 export type ComposeInput = { symbol: string; name: string };
 export type ComposeResult = {
   symbols: string[]; // ranked, strongest first
+  weightsBps: number[]; // conviction weights aligned to symbols, sum = 10000
   rationale: string; // short human explanation of the match
 };
 
@@ -129,6 +130,24 @@ function diversified(): string[] {
   return order.map((sec) => bySector(sec)[0]).filter(Boolean);
 }
 
+function equalWeightsBps(n: number): number[] {
+  if (n <= 0) return [];
+  const base = Math.floor(10000 / n);
+  const w = Array(n).fill(base);
+  w[n - 1] += 10000 - base * n; // last leg absorbs the rounding remainder
+  return w;
+}
+
+// conviction weights: proportional to relevance score, floored then the last
+// leg absorbs drift so the vector always sums to exactly 10000 bps.
+function scoreWeightsBps(scores: number[]): number[] {
+  const total = scores.reduce((s, x) => s + x, 0);
+  if (total <= 0) return equalWeightsBps(scores.length);
+  const raw = scores.map((s) => Math.floor((s / total) * 10000));
+  raw[raw.length - 1] += 10000 - raw.reduce((a, b) => a + b, 0);
+  return raw;
+}
+
 export function composeBasket(
   query: string,
   universe: ComposeInput[],
@@ -139,28 +158,35 @@ export function composeBasket(
   if (DIVERSIFY.test(query)) {
     const picks = diversified().filter((s) => known.has(s));
     const symbols = cap ? picks.slice(0, cap) : picks;
-    return { symbols, rationale: `Diversified — one leader per sector (${symbols.length}).` };
+    return {
+      symbols,
+      weightsBps: equalWeightsBps(symbols.length),
+      rationale: `Diversified — one leader per sector (${symbols.length}), equal-weighted.`,
+    };
   }
 
   const hits = scoreQuery(query);
   const ranked = [...hits.entries()]
     .filter(([sym]) => known.has(sym))
-    .sort((a, b) => b[1] - a[1])
-    .map(([sym]) => sym);
+    .sort((a, b) => b[1] - a[1]);
 
   if (ranked.length === 0) {
-    const picks = diversified().filter((s) => known.has(s)).slice(0, cap ?? 5);
+    const symbols = diversified().filter((s) => known.has(s)).slice(0, cap ?? 5);
     return {
-      symbols: picks,
+      symbols,
+      weightsBps: equalWeightsBps(symbols.length),
       rationale: "No specific match — diversified blue-chip starter basket.",
     };
   }
 
   const limit = cap ?? Math.min(Math.max(ranked.length, 2), 6);
-  const symbols = ranked.slice(0, limit);
+  const top = ranked.slice(0, limit);
+  const symbols = top.map(([sym]) => sym);
+  const weightsBps = scoreWeightsBps(top.map(([, score]) => score));
   const sectors = [...new Set(symbols.map((s) => SECTORS[s]))];
   return {
     symbols,
-    rationale: `Matched ${sectors.join(" · ")} → ${symbols.join(", ")}.`,
+    weightsBps,
+    rationale: `Matched ${sectors.join(" · ")} → conviction-weighted ${symbols.join(", ")}.`,
   };
 }

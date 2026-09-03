@@ -16,10 +16,14 @@ export function BasketBuilder({
   points,
   selected,
   onToggle,
+  weightOverride,
 }: {
   points: PricePoint[];
   selected: string[];
   onToggle?: (symbol: string) => void;
+  // conviction weights (symbol -> bps) from the AI composer; used only while it
+  // covers exactly the current selection — any manual edit reverts to equal.
+  weightOverride?: Record<string, number> | null;
 }) {
   const { isConnected } = useAccount();
   const { create, status, error, txHash } = useCreateBasket();
@@ -27,15 +31,27 @@ export function BasketBuilder({
   // OGB (the STAX community token) is auto-included in every basket.
   const chosen = points.filter((p) => selected.includes(p.token.symbol));
 
-  // Equal weights by default, rounded so they sum to 10000.
+  // Conviction weights when the override covers the exact selection; otherwise
+  // equal weights, rounded so they always sum to 10000.
   const weights = useMemo(() => {
     const n = chosen.length;
     if (n === 0) return [] as number[];
+    const covered =
+      weightOverride && chosen.every((c) => c.token.symbol in weightOverride);
+    if (covered) {
+      const raw = chosen.map((c) => weightOverride[c.token.symbol]);
+      const total = raw.reduce((s, w) => s + w, 0);
+      if (total > 0) {
+        const w = raw.map((r) => Math.floor((r / total) * 10000));
+        w[n - 1] += 10000 - w.reduce((a, b) => a + b, 0);
+        return w;
+      }
+    }
     const base = Math.floor(10000 / n);
     const w = Array(n).fill(base);
     w[n - 1] += 10000 - base * n;
     return w;
-  }, [chosen.length]);
+  }, [chosen, weightOverride]);
 
   const value = useMemo(() => {
     if (chosen.length === 0) return null;

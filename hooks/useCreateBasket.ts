@@ -12,7 +12,7 @@ export type BasketInput = {
 };
 
 // Prepares and sends a createBasket tx. The wallet (0x1dee or any) signs.
-// Paymaster (configured on the provider) sponsors gas so the user pays nothing.
+// Costs a small gas fee on Base; sponsored only for Smart Wallet accounts.
 export function useCreateBasket() {
   const { writeContractAsync, status, error, data } = useWriteContract();
 

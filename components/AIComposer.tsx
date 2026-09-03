@@ -21,7 +21,7 @@ export function AIComposer({
   onCompose,
 }: {
   points: PricePoint[];
-  onCompose: (symbols: string[]) => void;
+  onCompose: (symbols: string[], weightsBps: number[]) => void;
 }) {
   const reduce = useReducedMotion();
   const [query, setQuery] = useState("");
@@ -34,8 +34,8 @@ export function AIComposer({
       symbol: p.token.symbol,
       name: p.token.name,
     }));
-    const { symbols, rationale } = composeBasket(text, universe);
-    onCompose(symbols);
+    const { symbols, weightsBps, rationale } = composeBasket(text, universe);
+    onCompose(symbols, weightsBps);
     setRationale(rationale);
   }
 

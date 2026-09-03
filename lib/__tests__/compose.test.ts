@@ -11,6 +11,31 @@ describe("composeBasket", () => {
     expect(symbols).toContain("INTCc");
   });
 
+  it("weights always sum to exactly 10000 bps", () => {
+    for (const q of ["AI chip makers", "crypto", "top 4 tech", "diversified", "zzz"]) {
+      const { weightsBps } = composeBasket(q, universe);
+      expect(weightsBps.reduce((a, b) => a + b, 0)).toBe(10000);
+    }
+  });
+
+  it("conviction-weights the strongest match heaviest", () => {
+    const { symbols, weightsBps } = composeBasket("AI chip makers", universe);
+    const wNvda = weightsBps[symbols.indexOf("NVDAc")];
+    expect(Math.max(...weightsBps)).toBe(wNvda); // NVDA carries the top weight
+  });
+
+  it("equal-weights a diversified basket", () => {
+    const { weightsBps } = composeBasket("diversified", universe);
+    const min = Math.min(...weightsBps);
+    const max = Math.max(...weightsBps);
+    expect(max - min).toBeLessThanOrEqual(1); // equal up to rounding remainder
+  });
+
+  it("emits one weight per selected symbol", () => {
+    const { symbols, weightsBps } = composeBasket("apple and tesla", universe);
+    expect(weightsBps).toHaveLength(symbols.length);
+  });
+
   it("resolves company names directly", () => {
     const { symbols } = composeBasket("apple, microsoft and tesla", universe);
     expect(symbols).toEqual(expect.arrayContaining(["AAPLc", "MSFTc", "TSLAc"]));

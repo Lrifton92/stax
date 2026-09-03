@@ -8,7 +8,8 @@ import { REGISTRY_ABI, getRegistryAddress } from "../lib/registry";
 export type AlertDirection = 0 | 1;
 
 // Sends a setAlert(uint256,address,int256,uint8) tx. Threshold is an 8-decimal
-// price integer (same scale as the Chainlink feeds). Gas is sponsored.
+// price integer (same scale as the Chainlink feeds). Costs a small Base fee
+// (sponsored only for Smart Wallet accounts).
 export function useSetAlert() {
   const { writeContractAsync, status, error } = useWriteContract();
 
