@@ -30,7 +30,8 @@ demo posted on X tagging **@buildonbase**, and (2) the Google Form.
 ## Pre-submission checklist (Soufian)
 - [x] Builder Code `bc_7bkuc3p1` generated (base.dev), encoded suffix in .env + Vercel.
 - [ ] Add OnchainKit paymaster endpoint → `.env` `NEXT_PUBLIC_CDP_PAYMASTER` (CDP).
-- [ ] Deploy `BasketRegistry` to Base mainnet (you sign):
+- [x] BasketRegistry deployed to Base mainnet: 0x17E95A8A4D7bca00361c262593fb1abB0Cf35271 (tx 0xc69a52b1..., block 50816781).
+- [~] (done) Deploy `BasketRegistry` to Base mainnet (you sign):
       `cd contracts && base-forge script script/DeployBasketRegistry.s.sol --rpc-url https://mainnet.base.org --account lrifton-0x1dee --sender 0x1deeaEc4250e66702E22777Ec1E3A70B19745A72 --broadcast`
       → put address in `.env` `NEXT_PUBLIC_REGISTRY_ADDRESS`.
 - [x] Deployed to Vercel: https://stax-mocha.vercel.app (NEXT_PUBLIC_* set).
