@@ -7,6 +7,8 @@ import { basketValue, formatPrice } from "../lib/pricing";
 import { OGB_TOKEN } from "../lib/b20";
 import { useCreateBasket } from "../hooks/useCreateBasket";
 import { useAccount } from "wagmi";
+import { SectionHeader } from "./SectionHeader";
+import { BasketIcon } from "./icons";
 
 // Hero: compose a weighted basket, see live value, save it onchain.
 export function BasketBuilder({
@@ -55,12 +57,11 @@ export function BasketBuilder({
 
   return (
     <div className="glass" style={{ padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ margin: 0, fontSize: 16 }}>Basket builder</h2>
-        <span style={{ fontSize: 12, color: "var(--muted)" }}>
-          {chosen.length} selected · equal weight
-        </span>
-      </div>
+      <SectionHeader
+        icon={<BasketIcon />}
+        title="Basket builder"
+        meta={`${chosen.length} selected`}
+      />
 
       <input
         value={name}

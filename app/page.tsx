@@ -11,6 +11,8 @@ import { BasketsDashboard } from "../components/BasketsDashboard";
 import { AlertForm } from "../components/AlertForm";
 import { EligibilityBadge } from "../components/EligibilityBadge";
 import { TickerRibbon } from "../components/TickerRibbon";
+import { SectionHeader } from "../components/SectionHeader";
+import { MarketsIcon, LayersIcon } from "../components/icons";
 import { useStockPrices } from "../hooks/useStockPrices";
 import { useBaskets } from "../hooks/useBaskets";
 
@@ -127,33 +129,50 @@ export default function Page() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 340px",
-          gap: 18,
+          gridTemplateColumns: "minmax(0, 1fr) 360px",
+          gap: 20,
           alignItems: "start",
         }}
       >
-        <StockGrid points={points} selected={selected} onToggle={toggle} />
-        <BasketBuilder points={points} selected={[...selected]} />
-      </div>
+        {/* LEFT: markets + saved baskets */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 30, minWidth: 0 }}>
+          <section>
+            <SectionHeader
+              icon={<MarketsIcon />}
+              title="Markets"
+              meta="13 assets · live"
+            />
+            <StockGrid points={points} selected={selected} onToggle={toggle} />
+          </section>
 
-      <section style={{ marginTop: 32 }}>
-        <h2 style={{ fontSize: 18, margin: "0 0 12px" }}>My baskets</h2>
+          <section>
+            <SectionHeader
+              icon={<LayersIcon />}
+              title="My baskets"
+              meta={baskets.length > 0 ? `${baskets.length} saved` : undefined}
+            />
+            <BasketsDashboard
+              address={address}
+              selectedId={activeBasket?.id ?? null}
+              onSelect={setSelectedBasketId}
+            />
+          </section>
+        </div>
+
+        {/* RIGHT: sticky control panel — builder + alerts */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr) 340px",
-            gap: 18,
-            alignItems: "start",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            position: "sticky",
+            top: 16,
           }}
         >
-          <BasketsDashboard
-            address={address}
-            selectedId={activeBasket?.id ?? null}
-            onSelect={setSelectedBasketId}
-          />
+          <BasketBuilder points={points} selected={[...selected]} />
           <AlertForm basket={activeBasket} />
         </div>
-      </section>
+      </div>
     </Shell>
   );
 }

@@ -5,6 +5,8 @@ import type { Address } from "viem";
 import type { Basket } from "../hooks/useBaskets";
 import { STOCK_TOKENS } from "../lib/b20";
 import { useSetAlert, type AlertDirection } from "../hooks/useSetAlert";
+import { SectionHeader } from "./SectionHeader";
+import { BellIcon } from "./icons";
 
 const fieldStyle: React.CSSProperties = {
   background: "var(--bg-2)",
@@ -44,7 +46,7 @@ export function AlertForm({ basket }: { basket?: Basket | null }) {
   if (!basket) {
     return (
       <div className="glass" style={{ padding: 18 }}>
-        <h2 style={{ margin: "0 0 8px", fontSize: 16 }}>Price alerts</h2>
+        <SectionHeader icon={<BellIcon />} title="Price alerts" />
         <p style={{ color: "var(--muted)", fontSize: 13, margin: 0 }}>
           Save a basket first, then select it to set a price alert on one of its
           tokens.
@@ -71,18 +73,11 @@ export function AlertForm({ basket }: { basket?: Basket | null }) {
       className="glass"
       style={{ padding: 18, display: "flex", flexDirection: "column", gap: 12 }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h2 style={{ margin: 0, fontSize: 16 }}>Price alerts</h2>
-        <span className="mono" style={{ fontSize: 12, color: "var(--muted)" }}>
-          {basket.name} · #{basket.id.toString()}
-        </span>
-      </div>
+      <SectionHeader
+        icon={<BellIcon />}
+        title="Price alerts"
+        meta={`${basket.name} · #${basket.id.toString()}`}
+      />
 
       <label style={{ fontSize: 12, color: "var(--muted)" }}>Token</label>
       <select
