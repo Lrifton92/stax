@@ -136,7 +136,7 @@ export function BasketBuilder({
 
       {!isConnected && (
         <span style={{ fontSize: 12, color: "var(--muted)" }}>
-          Connect your wallet to save. Gas is sponsored.
+          Connect your wallet to save. Saving costs a small gas fee on Base.
         </span>
       )}
       {txHash && (

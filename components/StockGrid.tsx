@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import type { PricePoint } from "../hooks/useStockPrices";
 import { PriceTicker } from "./PriceTicker";
 
@@ -70,8 +71,16 @@ export function StockGrid({
   selected: Set<string>;
   onToggle: (symbol: string) => void;
 }) {
+  const reduce = useReducedMotion();
+
   return (
-    <div
+    <motion.div
+      initial="hidden"
+      animate="show"
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: reduce ? 0 : 0.035 } },
+      }}
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
@@ -81,8 +90,21 @@ export function StockGrid({
       {points.map((p) => {
         const isSel = selected.has(p.token.symbol);
         return (
-          <button
+          <motion.button
             key={p.token.symbol}
+            variants={{
+              hidden: reduce
+                ? { opacity: 0 }
+                : { opacity: 0, y: 12, filter: "blur(6px)" },
+              show: {
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+                transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+              },
+            }}
+            whileHover={reduce ? undefined : { y: -3, transition: { duration: 0.15 } }}
+            whileTap={reduce ? undefined : { scale: 0.985 }}
             onClick={() => onToggle(p.token.symbol)}
             className={`glass${isSel ? " accent-glow" : ""}`}
             style={{
@@ -122,13 +144,14 @@ export function StockGrid({
                   border: "1px solid var(--border-strong)",
                   background: isSel ? "var(--accent)" : "transparent",
                   flexShrink: 0,
+                  transition: "background 0.15s ease",
                 }}
               />
             </div>
             <PriceTicker price={p.price} stale={p.stale} />
-          </button>
+          </motion.button>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

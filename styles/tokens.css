@@ -214,3 +214,27 @@ body::before {
 *::-webkit-scrollbar { width: 0 !important; height: 0 !important; background: transparent !important; }
 *::-webkit-scrollbar-thumb { background: transparent !important; }
 html, body, * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+
+/* Exchange ticker ribbon marquee */
+@keyframes stax-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Loading shimmer skeleton */
+.stax-skeleton {
+  display: inline-block;
+  height: 14px;
+  width: 66px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 37%, rgba(255,255,255,0.05) 63%);
+  background-size: 400% 100%;
+  animation: stax-shimmer 1.4s ease infinite;
+}
+@keyframes stax-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stax-skeleton { animation: none; }
+}

@@ -29,7 +29,7 @@ export function PriceTicker({
   }, [price]);
 
   if (price === null) {
-    return <span className="kore-money" style={{ color: "var(--muted)" }}>—</span>;
+    return <span className="stax-skeleton" aria-label="loading price" />;
   }
 
   const color =
