@@ -48,9 +48,11 @@ export function WalletButton() {
     };
   }, [open]);
 
-  // de-dupe connectors by name
+  // de-dupe connectors by name; the Farcaster Mini App connector is handled by
+  // MiniKit's AutoConnect inside the Base app and is not a manual choice.
   const seen = new Set<string>();
   const list = connectors.filter((c) => {
+    if (c.type === "farcasterMiniApp" || c.type === "farcasterFrame") return false;
     if (seen.has(c.name)) return false;
     seen.add(c.name);
     return true;
