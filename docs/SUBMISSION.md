@@ -11,6 +11,9 @@ shared by five finalists). Submit via (1) a public demo video posted on X taggin
   https://github.com/Lrifton92/stax/blob/master/docs/demo/stax_demo.mp4
   (also embedded in the submission tweet)
 - **Submission tweet:** https://x.com/lrifton6240/status/2095881252188426594
+- **Google Form:** submitted 2026-09-04 16:34 CEST ("Votre réponse a bien été enregistrée").
+  Note: a first response sent a minute earlier contained duplicated field values
+  (form-fill glitch); the second response is the valid one.
 
 ## Links
 - **Live app:** https://stax-mocha.vercel.app
