@@ -1,7 +1,16 @@
 # STAX — Builder Quest submission package
 
-Quest: Base **Builder Quest — Tokenized Stocks** ($5,000). Submit via (1) a Loom
-demo posted on X tagging **@buildonbase**, and (2) the Google Form.
+Quest: Base **Builder Quest — Tokenized Stocks** ($5,000: $2,000 winner + $3,000
+shared by five finalists). Submit via (1) a public demo video posted on X tagging
+**@buildonbase**, and (2) the Google Form
+(https://docs.google.com/forms/d/e/1FAIpQLSfru57ZLO9AQ-hgWX_G5ZAzmAKkzFLZCyqe5wTyBSwACFX5tg/viewform).
+**Deadline: September 9, 11:59 PM EST.**
+
+## Submitted (2026-09-04)
+- **Demo video (public, 30 s, silent screen capture + captions):**
+  https://github.com/Lrifton92/stax/blob/master/docs/demo/stax_demo.mp4
+  (also embedded in the submission tweet)
+- **Submission tweet:** https://x.com/lrifton6240/status/2095877486798139810
 
 ## Links
 - **Live app:** https://stax-mocha.vercel.app
@@ -14,9 +23,10 @@ demo posted on X tagging **@buildonbase**, and (2) the Google Form.
 - **Project Name:** `STAX`
 - **What does it solve (1-2 lines):**
   `STAX is a wallet-native way to build, value, save onchain, and set price alerts on baskets of Coinbase tokenized stocks (B20) on Base. It turns single tokenized stocks into a personal, composable index — with an AI composer that turns plain-English exposure into a conviction-weighted basket, live multiplier- and staleness-aware Chainlink pricing, and a custody-free onchain registry.`
-- **Demo Video Link:** `<Loom URL>`
+- **Demo Video Link:** `https://github.com/Lrifton92/stax/blob/master/docs/demo/stax_demo.mp4`
 - **Live Project Link:** `https://stax-mocha.vercel.app`
 - **Builder Code:** `bc_7bkuc3p1`
+- **Submission Tweet Link:** `https://x.com/lrifton6240/status/2095877486798139810`
 
 ## What's built (final state)
 - **AI composer** — plain-English exposure ("AI chip makers", "big tech + crypto",
