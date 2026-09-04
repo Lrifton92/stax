@@ -10,7 +10,7 @@ shared by five finalists). Submit via (1) a public demo video posted on X taggin
 - **Demo video (public, 30 s, silent screen capture + captions):**
   https://github.com/Lrifton92/stax/blob/master/docs/demo/stax_demo.mp4
   (also embedded in the submission tweet)
-- **Submission tweet:** https://x.com/lrifton6240/status/2095877486798139810
+- **Submission tweet:** https://x.com/lrifton6240/status/2095881252188426594
 
 ## Links
 - **Live app:** https://stax-mocha.vercel.app
@@ -26,7 +26,7 @@ shared by five finalists). Submit via (1) a public demo video posted on X taggin
 - **Demo Video Link:** `https://github.com/Lrifton92/stax/blob/master/docs/demo/stax_demo.mp4`
 - **Live Project Link:** `https://stax-mocha.vercel.app`
 - **Builder Code:** `bc_7bkuc3p1`
-- **Submission Tweet Link:** `https://x.com/lrifton6240/status/2095877486798139810`
+- **Submission Tweet Link:** `https://x.com/lrifton6240/status/2095881252188426594`
 
 ## What's built (final state)
 - **AI composer** — plain-English exposure ("AI chip makers", "big tech + crypto",
